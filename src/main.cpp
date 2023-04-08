@@ -17,19 +17,13 @@
 #include <iostream>
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
-
 void mouse_callback(GLFWwindow *window, double xpos, double ypos);
-
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
-
 void processInput(GLFWwindow *window);
 
-void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
-
 //skajboks
-//nesto
-unsigned int loadCubemap(vector<std::string> faces);
 unsigned int loadTexture(char const * path);
+unsigned int loadCubemap(vector<std::string> faces);
 
 // settings
 const unsigned int SCR_WIDTH = 1600;//izmene
@@ -37,6 +31,7 @@ const unsigned int SCR_HEIGHT = 800;//izmene
 
 // camera
 Camera camera(glm::vec3(4.0f, 5.0f, 22.0f));//izmena
+bool CameraMouseMovementUpdateEnabled = true;
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -44,7 +39,7 @@ bool firstMouse = true;
 // timing
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
-
+/*
 struct PointLight {
     glm::vec3 position;
     glm::vec3 ambient;
@@ -105,7 +100,7 @@ void ProgramState::LoadFromFile(std::string filename) {
 ProgramState *programState;
 
 void DrawImGui(ProgramState *programState);
-
+*/
 int main() {
     // glfw: initialize and configure
     // ------------------------------
@@ -130,7 +125,6 @@ int main() {
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
-    //glfwSetKeyCallback(window, key_callback);
     // tell GLFW to capture our mouse
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -143,7 +137,7 @@ int main() {
 
     // tell stb_image.h to flip loaded texture's on the y-axis (before loading model).
     //stbi_set_flip_vertically_on_load(true);//vrv ovo remeti ,pa naopacke
-
+    /*
     programState = new ProgramState;
     programState->LoadFromFile("resources/program_state.txt");
     if (programState->ImGuiEnabled) {
@@ -159,11 +153,11 @@ int main() {
 
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330 core");
-
+    */
     // configure global opengl state
     // -----------------------------
     glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);//petra
+    //glDepthFunc(GL_LESS);//p
 
     // build and compile shaders
     // -------------------------
@@ -171,7 +165,22 @@ int main() {
     Shader ourShader("resources/shaders/2.model_lighting.vs", "resources/shaders/2.model_lighting.fs");
 
 
+    /* l
+    // floor plain coordinates
+    float floorVertices[] = {                          //i ovo mozda ugasi
+            // positions          // normals          // texture coords
+            0.5f,  0.5f,  0.0f,  0.0f, 0.0f, -1.0f,  1.0f,  1.0f,  // top right
+            0.5f, -0.5f,  0.0f,  0.0f, 0.0f, -1.0f,  1.0f,  0.0f,  // bottom right
+            -0.5f, -0.5f,  0.0f,  0.0f, 0.0f, -1.0f,  0.0f,  0.0f,  // bottom left
+            -0.5f,  0.5f,  0.0f,  0.0f, 0.0f, -1.0f,  0.0f,  1.0f   // top left
+    };
 
+    // floor vertices for use in EBO
+    unsigned int floorIndices[] = {
+            0, 1, 3,  // first Triangle
+            1, 2, 3   // second Triangle
+    };
+     */
     //***********************************************************************************
     float skyboxVertices[] = {
             // positions
@@ -217,6 +226,31 @@ int main() {
             -1.0f, -1.0f,  1.0f,
             1.0f, -1.0f,  1.0f
     };
+    /*
+    // Floor setup
+    unsigned int floorVAO, floorVBO, floorEBO;
+    glGenVertexArrays(1, &floorVAO);
+    glGenBuffers(1, &floorVBO);
+    glGenBuffers(1, &floorEBO);
+
+    glBindVertexArray(floorVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, floorVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(floorVertices), floorVertices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, floorEBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(floorIndices), floorIndices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), nullptr);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3*sizeof(float)));
+    glEnableVertexAttribArray(1);
+    //ovo mozda ugasi
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6*sizeof(float)));
+    glEnableVertexAttribArray(2);
+
+    //glBindVertexArray(0); mozda ne treba
+
+     */
+
 
     // skybox VAO, VBO, and loading textures
     unsigned int skyboxVAO, skyboxVBO;
@@ -228,6 +262,23 @@ int main() {
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
+
+    /*
+    //BRATE JA ZA SAD NECU TEKSTURU
+    //teksture za podlogu
+    //unsigned int diffuseMap = loadTexture(FileSystem::getPath("resources/textures/grass1.jpg").c_str());
+    //unsigned int specularMap = loadTexture(FileSystem::getPath("resources/textures/grass1.jpg").c_str());
+
+    //ucitavanje teksture
+    // floor
+    unsigned int floorDiffuseMap = loadTexture(FileSystem::getPath("resources/textures/atlantis.jpg").c_str());
+
+
+    // floor textures
+   // unsigned int floorDiffuseMap = loadTexture(FileSystem::getPath("resources/textures/middle_earth.jpg").c_str());
+   // unsigned int floorSpecularMap = specularMap;//!!!!!!!
+
+    */
     vector<std::string> faces {
 /*
                    FileSystem::getPath("resources/textures/skybox/0003_0.jpg"),
@@ -247,34 +298,31 @@ int main() {
             */
 
 
+            FileSystem::getPath("resources/textures/skybox/12.jpg"),
+            FileSystem::getPath("resources/textures/skybox/12.jpg"),
+            FileSystem::getPath("resources/textures/skybox/12.jpg"),
+            FileSystem::getPath("resources/textures/skybox/12.jpg"),
             FileSystem::getPath("resources/textures/skybox/2.jpg"),
-            FileSystem::getPath("resources/textures/skybox/12.jpg"),
-            FileSystem::getPath("resources/textures/skybox/12.jpg"),
-            FileSystem::getPath("resources/textures/skybox/12.jpg"),
-            FileSystem::getPath("resources/textures/skybox/12.jpg"),
             FileSystem::getPath("resources/textures/skybox/5.jpg")
 
     };
     //stbi_set_flip_vertically_on_load(true);
-
-    unsigned int cubemapTexture = loadCubemap(faces);
-//***************************************************************
 
 
 
     //Shader activation
     skyboxShader.use();
     skyboxShader.setInt("skybox", 0);
-
-
+    unsigned int cubemapTexture = loadCubemap(faces);
+//***************************************************************
 
 
     // load models
     // -----------
-    Model ourModel("resources/objects/backpack/backpack.obj");
-    ourModel.SetShaderTextureNamePrefix("material.");
+    //Model ourModel("resources/objects/backpack/backpack.obj");
+    //ourModel.SetShaderTextureNamePrefix("material.");
 
-
+    /*
 
     PointLight& pointLight = programState->pointLight;
     pointLight.position = glm::vec3(4.0f, 4.0, 0.0);
@@ -286,7 +334,7 @@ int main() {
     pointLight.linear = 0.09f;
     pointLight.quadratic = 0.032f;
 
-
+    */
 
     // draw in wireframe
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -316,7 +364,7 @@ int main() {
 
         // don't forget to enable shader before setting uniforms
         ourShader.use();
-
+        /*
         pointLight.position = glm::vec3(4.0 * cos(currentFrame), 4.0f, 4.0 * sin(currentFrame));
         ourShader.setVec3("pointLight.position", pointLight.position);
         ourShader.setVec3("pointLight.ambient", pointLight.ambient);
@@ -325,21 +373,21 @@ int main() {
         ourShader.setFloat("pointLight.constant", pointLight.constant);
         ourShader.setFloat("pointLight.linear", pointLight.linear);
         ourShader.setFloat("pointLight.quadratic", pointLight.quadratic);
-
         ourShader.setVec3("viewPosition",programState->camera.Position);
         ourShader.setFloat("material.shininess", 32.0f);
+        */
+
         // view/projection transformations
-
-
-        glm::mat4 projection = glm::perspective(glm::radians(programState->camera.Zoom),
+        glm::mat4 view = camera.GetViewMatrix();
+        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom),
                                                 (float) SCR_WIDTH / (float) SCR_HEIGHT, 0.1f, 100.0f);
-        glm::mat4 view = programState->camera.GetViewMatrix();
+
         ourShader.setMat4("projection", projection);
         ourShader.setMat4("view", view);
 
 
 
-
+         /*
         // render the loaded model
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model,
@@ -350,19 +398,32 @@ int main() {
 
         if (programState->ImGuiEnabled)
             DrawImGui(programState);
+         */
+        // floor setup
+        // light properties
+        //lightshowShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
 
+        /*
+        // render floor
+        glBindVertexArray(floorVAO);
+        glEnable(GL_CULL_FACE);     // floor won't be visible if looked from bellow
+        glCullFace(GL_BACK);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+        glDisable(GL_CULL_FACE);
 
+        */
 
         //*************************************************************************
         // draw skybox as last
         // change depth function so depth test passes when values are equal to depth buffer's content
-        //glDepthMask(GL_FALSE);//!!!!!!
+        glDepthMask(GL_FALSE);//!!!!!!
         glDepthFunc(GL_LEQUAL);
         skyboxShader.use();
-        projection=glm::perspective(glm::radians(programState->camera.Zoom),(float )SCR_WIDTH/(float )SCR_HEIGHT , 0.1f ,100.0f);
-        view=glm::mat4(glm::mat3(programState->camera.GetViewMatrix()));
+        //projection=glm::perspective(glm::radians(programState->camera.Zoom),(float )SCR_WIDTH/(float )SCR_HEIGHT , 0.1f ,100.0f);
+        //view=glm::mat4(glm::mat3(programState->camera.GetViewMatrix()));
         //view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix
-        skyboxShader.setMat4("view", view);
+        //skyboxShader.setMat4("view", view);
+        skyboxShader.setMat4("view", glm::mat4(glm::mat3 (view)));
         skyboxShader.setMat4("projection", projection);
         // skybox cube
         glBindVertexArray(skyboxVAO);
@@ -370,7 +431,7 @@ int main() {
         glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
-        //glDepthMask(GL_TRUE);//!!!!!
+        glDepthMask(GL_TRUE);//!!!!!
         glDepthFunc(GL_LESS); // set depth function back to default
         //glBindFramebuffer(GL_FRAMEBUFFER, 0);
         //*********************************************
@@ -382,18 +443,20 @@ int main() {
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-
+    /*
     programState->SaveToFile("resources/program_state.txt");
     delete programState;
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
-
+    */
     //deleting arrays and buffers
-    //glDeleteVertexArrays(1, &skyboxVAO);
-    //glDeleteBuffers(1, &skyboxVAO);
+    //glDeleteVertexArrays(1, &floorVAO);
+    glDeleteVertexArrays(1, &skyboxVAO);//~~~~~~~~~~~~~~~~~~
 
-
+    //glDeleteBuffers(1, &floorVBO);
+    //glDeleteBuffers(1, &floorEBO);
+    glDeleteBuffers(1, &skyboxVAO);//~~~~~~~~~~~~~~~~~~~~~~~~
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
     glfwTerminate();
@@ -408,19 +471,6 @@ void processInput(GLFWwindow *window) {
         glfwSetWindowShouldClose(window, true);
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        programState->camera.ProcessKeyboard(FORWARD, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        programState->camera.ProcessKeyboard(BACKWARD, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        programState->camera.ProcessKeyboard(LEFT, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        programState->camera.ProcessKeyboard(RIGHT, deltaTime);
-
-    /*njegovo
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
-
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         camera.ProcessKeyboard(FORWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
         camera.ProcessKeyboard(BACKWARD, deltaTime);
@@ -428,7 +478,8 @@ void processInput(GLFWwindow *window) {
         camera.ProcessKeyboard(LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera.ProcessKeyboard(RIGHT, deltaTime);
-*/
+
+
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
@@ -454,30 +505,17 @@ void mouse_callback(GLFWwindow *window, double xpos, double ypos) {
     lastX = xpos;
     lastY = ypos;
 
-    //if (programState->CameraMouseMovementUpdateEnabled)//bolje bez ovoga
-    programState->camera.ProcessMouseMovement(xoffset, yoffset);//izmeni
-    /* NJEGOVO
-     if (firstMouse) {
-         lastX = xpos;
-         lastY = ypos;
-         firstMouse = false;
-     }
+    if (CameraMouseMovementUpdateEnabled)//bolje bez ovoga
+     camera.ProcessMouseMovement(xoffset, yoffset);//izmeni
 
-     float xoffset = xpos - lastX;
-     float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
-
-     lastX = xpos;
-     lastY = ypos;
-
-     camera.ProcessMouseMovement(xoffset, yoffset);*/
 }
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
 // ----------------------------------------------------------------------
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
-    programState->camera.ProcessMouseScroll(yoffset);
+     camera.ProcessMouseScroll(yoffset);
 }
-
+/*
 void DrawImGui(ProgramState *programState) {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
@@ -512,6 +550,7 @@ void DrawImGui(ProgramState *programState) {
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
+ */
 //skajboks
 //Cubemap loading function
 //------------------------------------------------------------------------
@@ -584,7 +623,7 @@ unsigned int loadTexture(const char *path) {
 }
 
 
-
+/*
 
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
     if (key == GLFW_KEY_F1 && action == GLFW_PRESS) {
@@ -597,3 +636,4 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
         }
     }
 }
+*/
