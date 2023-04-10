@@ -165,7 +165,7 @@ int main() {
     Shader ourShader("resources/shaders/2.model_lighting.vs", "resources/shaders/2.model_lighting.fs");
 
 
-    /* l
+
     // floor plain coordinates
     float floorVertices[] = {                          //i ovo mozda ugasi
             // positions          // normals          // texture coords
@@ -180,7 +180,7 @@ int main() {
             0, 1, 3,  // first Triangle
             1, 2, 3   // second Triangle
     };
-     */
+
     //***********************************************************************************
     float skyboxVertices[] = {
             // positions
@@ -226,7 +226,7 @@ int main() {
             -1.0f, -1.0f,  1.0f,
             1.0f, -1.0f,  1.0f
     };
-    /*
+
     // Floor setup
     unsigned int floorVAO, floorVBO, floorEBO;
     glGenVertexArrays(1, &floorVAO);
@@ -249,7 +249,7 @@ int main() {
 
     //glBindVertexArray(0); mozda ne treba
 
-     */
+
 
 
     // skybox VAO, VBO, and loading textures
@@ -263,22 +263,12 @@ int main() {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
 
-    /*
-    //BRATE JA ZA SAD NECU TEKSTURU
-    //teksture za podlogu
-    //unsigned int diffuseMap = loadTexture(FileSystem::getPath("resources/textures/grass1.jpg").c_str());
-    //unsigned int specularMap = loadTexture(FileSystem::getPath("resources/textures/grass1.jpg").c_str());
 
     //ucitavanje teksture
     // floor
-    unsigned int floorDiffuseMap = loadTexture(FileSystem::getPath("resources/textures/atlantis.jpg").c_str());
+    unsigned int floorDiffuseMap = loadTexture(FileSystem::getPath("resources/textures/crna.jpg").c_str());
 
-
-    // floor textures
-   // unsigned int floorDiffuseMap = loadTexture(FileSystem::getPath("resources/textures/middle_earth.jpg").c_str());
-   // unsigned int floorSpecularMap = specularMap;//!!!!!!!
-
-    */
+    
     vector<std::string> faces {
 /*
                    FileSystem::getPath("resources/textures/skybox/0003_0.jpg"),
@@ -378,6 +368,7 @@ int main() {
         */
 
         // view/projection transformations
+        glm::mat4 model = glm::mat4(1.0f);//vidi ovo !!!!!!!!! za pod
         glm::mat4 view = camera.GetViewMatrix();
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom),
                                                 (float) SCR_WIDTH / (float) SCR_HEIGHT, 0.1f, 100.0f);
@@ -399,11 +390,20 @@ int main() {
         if (programState->ImGuiEnabled)
             DrawImGui(programState);
          */
+
+        //WTFFFFF,KAKAV MODEL
         // floor setup
         // light properties
-        //lightshowShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
-
-        /*
+        ourShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
+        //floor world transformation
+         model = glm::mat4(1.0f);
+         model = glm::translate(model, glm::vec3(0.0f, -0.51f, 0.0f));
+         model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+         model = glm::scale(model, glm::vec3(25.0f));
+        ourShader.setMat4("model", model);
+        // bind diffuse map
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, floorDiffuseMap);
         // render floor
         glBindVertexArray(floorVAO);
         glEnable(GL_CULL_FACE);     // floor won't be visible if looked from bellow
@@ -411,7 +411,7 @@ int main() {
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
         glDisable(GL_CULL_FACE);
 
-        */
+
 
         //*************************************************************************
         // draw skybox as last
