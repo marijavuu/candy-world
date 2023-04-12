@@ -1,0 +1,52 @@
+# Blender MTL File: 'Biscuit.blend'
+# Material Count: 4
+
+newmtl Chocolate_Biscuit
+Ns 143.999983
+Ka 1.000000 1.000000 1.000000
+Kd 0.034552 0.010427 0.003990
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump Biscuits Normal.png
+map_Kd Chocolate Biscuit Color.png
+map_Ns Biscuits Roughness.png
+
+newmtl Chocolate_Filling
+Ns 125.216117
+Ka 1.000000 1.000000 1.000000
+Kd 0.081137 0.032684 0.008231
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd Chocolate Filling Color.png
+map_Ns Filling Roughness.png
+
+newmtl Vanilla_Biscuit
+Ns 143.999983
+Ka 1.000000 1.000000 1.000000
+Kd 0.581606 0.340752 0.190697
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump Biscuits Normal.png
+map_Kd Vanilla Biscuit Color.png
+map_Ns Biscuits Roughness.png
+
+newmtl Vanilla_Filling
+Ns 125.216117
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.734727 0.728708
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd Vanilla Filling Color.png
+map_Ns Filling Roughness.png

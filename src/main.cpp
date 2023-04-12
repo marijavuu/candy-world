@@ -45,12 +45,10 @@ struct PointLight {
     glm::vec3 ambient;
     glm::vec3 diffuse;
     glm::vec3 specular;
-
     float constant;
     float linear;
     float quadratic;
 };
-
 struct ProgramState {
     glm::vec3 clearColor = glm::vec3(0);
     bool ImGuiEnabled = false;
@@ -61,12 +59,9 @@ struct ProgramState {
     PointLight pointLight;
     ProgramState()
             : camera(glm::vec3(0.0f, 0.0f, 3.0f)) {}
-
     void SaveToFile(std::string filename);
-
     void LoadFromFile(std::string filename);
 };
-
 void ProgramState::SaveToFile(std::string filename) {
     std::ofstream out(filename);
     out << clearColor.r << '\n'
@@ -80,7 +75,6 @@ void ProgramState::SaveToFile(std::string filename) {
         << camera.Front.y << '\n'
         << camera.Front.z << '\n';
 }
-
 void ProgramState::LoadFromFile(std::string filename) {
     std::ifstream in(filename);
     if (in) {
@@ -96,9 +90,7 @@ void ProgramState::LoadFromFile(std::string filename) {
            >> camera.Front.z;
     }
 }
-
 ProgramState *programState;
-
 void DrawImGui(ProgramState *programState);
 */
 int main() {
@@ -148,9 +140,6 @@ int main() {
     ImGui::CreateContext();
     ImGuiIO &io = ImGui::GetIO();
     (void) io;
-
-
-
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330 core");
     */
@@ -165,7 +154,7 @@ int main() {
     Shader ourShader("resources/shaders/2.model_lighting.vs", "resources/shaders/2.model_lighting.fs");
 
 
-
+    /*
     // floor plain coordinates
     float floorVertices[] = {                          //i ovo mozda ugasi
             // positions          // normals          // texture coords
@@ -180,7 +169,7 @@ int main() {
             0, 1, 3,  // first Triangle
             1, 2, 3   // second Triangle
     };
-
+    */
     //***********************************************************************************
     float skyboxVertices[] = {
             // positions
@@ -226,7 +215,7 @@ int main() {
             -1.0f, -1.0f,  1.0f,
             1.0f, -1.0f,  1.0f
     };
-
+    /*
     // Floor setup
     unsigned int floorVAO, floorVBO, floorEBO;
     glGenVertexArrays(1, &floorVAO);
@@ -249,7 +238,7 @@ int main() {
 
     //glBindVertexArray(0); mozda ne treba
 
-
+     */
 
 
     // skybox VAO, VBO, and loading textures
@@ -266,9 +255,9 @@ int main() {
 
     //ucitavanje teksture
     // floor
-    unsigned int floorDiffuseMap = loadTexture(FileSystem::getPath("resources/textures/crna.jpg").c_str());
+    //unsigned int floorDiffuseMap = loadTexture(FileSystem::getPath("resources/textures/crna.jpg").c_str());
 
-    
+
     vector<std::string> faces {
 /*
                    FileSystem::getPath("resources/textures/skybox/0003_0.jpg"),
@@ -313,17 +302,14 @@ int main() {
     //ourModel.SetShaderTextureNamePrefix("material.");
 
     /*
-
     PointLight& pointLight = programState->pointLight;
     pointLight.position = glm::vec3(4.0f, 4.0, 0.0);
     pointLight.ambient = glm::vec3(0.1, 0.1, 0.1);
     pointLight.diffuse = glm::vec3(0.6, 0.6, 0.6);
     pointLight.specular = glm::vec3(1.0, 1.0, 1.0);
-
     pointLight.constant = 1.0f;
     pointLight.linear = 0.09f;
     pointLight.quadratic = 0.032f;
-
     */
 
     // draw in wireframe
@@ -368,38 +354,36 @@ int main() {
         */
 
         // view/projection transformations
-        glm::mat4 model = glm::mat4(1.0f);//vidi ovo !!!!!!!!! za pod
-        glm::mat4 view = camera.GetViewMatrix();
+        //glm::mat4 model = glm::mat4(1.0f);//vidi ovo !!!!!!!!! za pod
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom),
                                                 (float) SCR_WIDTH / (float) SCR_HEIGHT, 0.1f, 100.0f);
-
+        glm::mat4 view = camera.GetViewMatrix();
         ourShader.setMat4("projection", projection);
         ourShader.setMat4("view", view);
 
 
 
-         /*
-        // render the loaded model
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model,
-                               programState->backpackPosition); // translate it down so it's at the center of the scene
-        model = glm::scale(model, glm::vec3(programState->backpackScale));    // it's a bit too big for our scene, so scale it down
-        ourShader.setMat4("model", model);
-        ourModel.Draw(ourShader);
-
-        if (programState->ImGuiEnabled)
-            DrawImGui(programState);
-         */
-
+        /*
+       // render the loaded model
+       glm::mat4 model = glm::mat4(1.0f);
+       model = glm::translate(model,
+                              programState->backpackPosition); // translate it down so it's at the center of the scene
+       model = glm::scale(model, glm::vec3(programState->backpackScale));    // it's a bit too big for our scene, so scale it down
+       ourShader.setMat4("model", model);
+       ourModel.Draw(ourShader);
+       if (programState->ImGuiEnabled)
+           DrawImGui(programState);
+        */
+        /*
         //WTFFFFF,KAKAV MODEL
         // floor setup
         // light properties
         ourShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
         //floor world transformation
-         model = glm::mat4(1.0f);
-         model = glm::translate(model, glm::vec3(0.0f, -0.51f, 0.0f));
-         model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-         model = glm::scale(model, glm::vec3(25.0f));
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, -0.51f, 0.0f));
+        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(25.0f));
         ourShader.setMat4("model", model);
         // bind diffuse map
         glActiveTexture(GL_TEXTURE0);
@@ -410,7 +394,7 @@ int main() {
         glCullFace(GL_BACK);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
         glDisable(GL_CULL_FACE);
-
+         */
 
 
         //*************************************************************************
@@ -506,22 +490,20 @@ void mouse_callback(GLFWwindow *window, double xpos, double ypos) {
     lastY = ypos;
 
     if (CameraMouseMovementUpdateEnabled)//bolje bez ovoga
-     camera.ProcessMouseMovement(xoffset, yoffset);//izmeni
+        camera.ProcessMouseMovement(xoffset, yoffset);//izmeni
 
 }
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
 // ----------------------------------------------------------------------
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
-     camera.ProcessMouseScroll(yoffset);
+    camera.ProcessMouseScroll(yoffset);
 }
 /*
 void DrawImGui(ProgramState *programState) {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
-
-
     {
         static float f = 0.0f;
         ImGui::Begin("Hello window");
@@ -530,13 +512,11 @@ void DrawImGui(ProgramState *programState) {
         ImGui::ColorEdit3("Background color", (float *) &programState->clearColor);
         ImGui::DragFloat3("Backpack position", (float*)&programState->backpackPosition);
         ImGui::DragFloat("Backpack scale", &programState->backpackScale, 0.05, 0.1, 4.0);
-
         ImGui::DragFloat("pointLight.constant", &programState->pointLight.constant, 0.05, 0.0, 1.0);
         ImGui::DragFloat("pointLight.linear", &programState->pointLight.linear, 0.05, 0.0, 1.0);
         ImGui::DragFloat("pointLight.quadratic", &programState->pointLight.quadratic, 0.05, 0.0, 1.0);
         ImGui::End();
     }
-
     {
         ImGui::Begin("Camera info");
         const Camera& c = programState->camera;
@@ -546,7 +526,6 @@ void DrawImGui(ProgramState *programState) {
         ImGui::Checkbox("Camera mouse update", &programState->CameraMouseMovementUpdateEnabled);
         ImGui::End();
     }
-
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
@@ -624,7 +603,6 @@ unsigned int loadTexture(const char *path) {
 
 
 /*
-
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
     if (key == GLFW_KEY_F1 && action == GLFW_PRESS) {
         programState->ImGuiEnabled = !programState->ImGuiEnabled;
