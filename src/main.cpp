@@ -20,6 +20,7 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void mouse_callback(GLFWwindow *window, double xpos, double ypos);
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
+void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
 
 //skajboks
 unsigned int loadTexture(char const * path);
@@ -30,7 +31,7 @@ const unsigned int SCR_WIDTH = 1600;//izmene
 const unsigned int SCR_HEIGHT = 800;//izmene
 
 // camera
-Camera camera(glm::vec3(4.0f, 5.0f, 22.0f));//izmena
+Camera camera(glm::vec3(4.0f, 5.0f, 25.0f));//izmena
 bool CameraMouseMovementUpdateEnabled = true;
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
@@ -39,7 +40,36 @@ bool firstMouse = true;
 // timing
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
+
 /*
+//hamburgeri
+glm::vec3 hamburgeripoz = glm::vec3(0.0f);
+float hamburgeriscale = 1.0f;
+
+//tortica
+glm::vec3 torticapoz = glm::vec3(0.0f);
+float torticascale = 1.0f;
+
+//keksici
+glm::vec3 keksicipoz = glm::vec3(0.0f);
+float keksiciscale = 1.0f;
+
+//cheezespider
+glm::vec3 cheezespiderpoz = glm::vec3(0.0f);
+float cheezespiderscale = 1.0f; //ne valja
+
+//ananas
+glm::vec3 ananaspoz = glm::vec3(0.0f);
+float ananasscale = 1.0f;
+
+//cocacola1
+glm::vec3 cocacola1poz = glm::vec3(0.0f);
+float cocacola1scale = 1.0f;
+
+//cocacola2
+glm::vec3 cocacola2poz = glm::vec3(0.0f);
+float cocacola2scale = 1.0f;
+*/
 struct PointLight {
     glm::vec3 position;
     glm::vec3 ambient;
@@ -92,7 +122,7 @@ void ProgramState::LoadFromFile(std::string filename) {
 }
 ProgramState *programState;
 void DrawImGui(ProgramState *programState);
-*/
+
 int main() {
     // glfw: initialize and configure
     // ------------------------------
@@ -117,6 +147,7 @@ int main() {
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
+    glfwSetKeyCallback(window, key_callback);
     // tell GLFW to capture our mouse
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -129,7 +160,7 @@ int main() {
 
     // tell stb_image.h to flip loaded texture's on the y-axis (before loading model).
     //stbi_set_flip_vertically_on_load(true);//vrv ovo remeti ,pa naopacke
-    /*
+
     programState = new ProgramState;
     programState->LoadFromFile("resources/program_state.txt");
     if (programState->ImGuiEnabled) {
@@ -142,11 +173,11 @@ int main() {
     (void) io;
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330 core");
-    */
+
     // configure global opengl state
     // -----------------------------
     glEnable(GL_DEPTH_TEST);
-    //glDepthFunc(GL_LESS);//p
+    glDepthFunc(GL_LESS);//p
 
     // build and compile shaders
     // -------------------------
@@ -170,7 +201,43 @@ int main() {
             1, 2, 3   // second Triangle
     };
     */
+
+    // load models
+    // -----------
+    Model hamburgeri("resources/objects/model16/hamburgeres.obj");
+    hamburgeri.SetShaderTextureNamePrefix("material.");
+
+    //Model tortica("resources/objects/model20/cakeSlice+2xPlates+strawberry.obj");
+    //tortica.SetShaderTextureNamePrefix("material.");
+
+    Model keksici("resources/objects/model22/Biscuit.obj");
+    keksici.SetShaderTextureNamePrefix("material.");
+
+    Model cheezespider("resources/objects/model24/cheezespider.obj");
+    cheezespider.SetShaderTextureNamePrefix("material.");
+
+    Model ananas("resources/objects/model25/10200_Pineapple_v1-L2.obj");
+    ananas.SetShaderTextureNamePrefix("material.");
+
+    //nesto me ova koca zeza ,nema ispunjenu casu ,nzm sto,a volim ovaj model
+    Model cocacola1("resources/objects/model27/cup OBJ.obj");
+    cocacola1.SetShaderTextureNamePrefix("material.");
+
+    //Model cocacola2("resources/objects/model28/coke.obj");
+    //cocacola2.SetShaderTextureNamePrefix("material.");
+
+    PointLight& pointLight = programState->pointLight;
+    pointLight.position = glm::vec3(4.0f, 4.0, 0.0);
+    pointLight.ambient = glm::vec3(0.1, 0.1, 0.1);
+    pointLight.diffuse = glm::vec3(0.6, 0.6, 0.6);
+    pointLight.specular = glm::vec3(1.0, 1.0, 1.0);
+    pointLight.constant = 1.0f;
+    pointLight.linear = 0.09f;
+    pointLight.quadratic = 0.032f;
+
+
     //***********************************************************************************
+
     float skyboxVertices[] = {
             // positions
             -1.0f,  1.0f, -1.0f,
@@ -215,6 +282,7 @@ int main() {
             -1.0f, -1.0f,  1.0f,
             1.0f, -1.0f,  1.0f
     };
+
     /*
     // Floor setup
     unsigned int floorVAO, floorVBO, floorEBO;
@@ -266,15 +334,15 @@ int main() {
                     FileSystem::getPath("resources/textures/skybox/0004_0.jpg"),
                     FileSystem::getPath("resources/textures/skybox/0002_0.jpg"),
                     FileSystem::getPath("resources/textures/skybox/0006_0.jpg")
-*/
-            /*
+
+
             FileSystem::getPath("resources/textures/skybox/front.jpg"),
             FileSystem::getPath("resources/textures/skybox/back.jpg"),
             FileSystem::getPath("resources/textures/skybox/top.jpg"),
             FileSystem::getPath("resources/textures/skybox/bottom.jpg"),
             FileSystem::getPath("resources/textures/skybox/left.jpg"),
             FileSystem::getPath("resources/textures/skybox/right.jpg")
-            */
+*/
 
 
             FileSystem::getPath("resources/textures/skybox/12.jpg"),
@@ -285,35 +353,19 @@ int main() {
             FileSystem::getPath("resources/textures/skybox/5.jpg")
 
     };
+
     //stbi_set_flip_vertically_on_load(true);
 
+//***************************************************************
+
+    // draw in wireframe
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 
     //Shader activation
     skyboxShader.use();
     skyboxShader.setInt("skybox", 0);
     unsigned int cubemapTexture = loadCubemap(faces);
-//***************************************************************
-
-
-    // load models
-    // -----------
-    //Model ourModel("resources/objects/backpack/backpack.obj");
-    //ourModel.SetShaderTextureNamePrefix("material.");
-
-    /*
-    PointLight& pointLight = programState->pointLight;
-    pointLight.position = glm::vec3(4.0f, 4.0, 0.0);
-    pointLight.ambient = glm::vec3(0.1, 0.1, 0.1);
-    pointLight.diffuse = glm::vec3(0.6, 0.6, 0.6);
-    pointLight.specular = glm::vec3(1.0, 1.0, 1.0);
-    pointLight.constant = 1.0f;
-    pointLight.linear = 0.09f;
-    pointLight.quadratic = 0.032f;
-    */
-
-    // draw in wireframe
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     // render loop
     // -----------
@@ -331,16 +383,16 @@ int main() {
 
         // render
         // ------
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);//izmeni
+        glClearColor(programState->clearColor.r, programState->clearColor.g, programState->clearColor.b, 1.0f);//izmeni
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
-
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
 
 
         // don't forget to enable shader before setting uniforms
         ourShader.use();
-        /*
+
         pointLight.position = glm::vec3(4.0 * cos(currentFrame), 4.0f, 4.0 * sin(currentFrame));
         ourShader.setVec3("pointLight.position", pointLight.position);
         ourShader.setVec3("pointLight.ambient", pointLight.ambient);
@@ -349,9 +401,12 @@ int main() {
         ourShader.setFloat("pointLight.constant", pointLight.constant);
         ourShader.setFloat("pointLight.linear", pointLight.linear);
         ourShader.setFloat("pointLight.quadratic", pointLight.quadratic);
+
+
+
         ourShader.setVec3("viewPosition",programState->camera.Position);
         ourShader.setFloat("material.shininess", 32.0f);
-        */
+
 
         // view/projection transformations
         //glm::mat4 model = glm::mat4(1.0f);//vidi ovo !!!!!!!!! za pod
@@ -361,19 +416,76 @@ int main() {
         ourShader.setMat4("projection", projection);
         ourShader.setMat4("view", view);
 
+        // render the loaded model
 
+        //hamburgeri
+
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model,
+                               glm::vec3(10.0f,(5.0f+ sin(glfwGetTime())/6),1.0f)); // translate it down so it's at the center of the scene
+        model = glm::scale(model, glm::vec3(1.2f,1.5f,1.2f));    // it's a bit too big for our scene, so scale it down
+        ourShader.setMat4("model", model);
+        hamburgeri.Draw(ourShader);
 
         /*
-       // render the loaded model
-       glm::mat4 model = glm::mat4(1.0f);
-       model = glm::translate(model,
-                              programState->backpackPosition); // translate it down so it's at the center of the scene
-       model = glm::scale(model, glm::vec3(programState->backpackScale));    // it's a bit too big for our scene, so scale it down
-       ourShader.setMat4("model", model);
-       ourModel.Draw(ourShader);
+        //tortica
+        model = glm::mat4(1.0f);
+        model = glm::translate(model,
+                               glm::vec3(15.0f,(5.0f+ sin(glfwGetTime())/6),7.0f)); // translate it down so it's at the center of the scene
+        model = glm::scale(model, glm::vec3(0.4f,0.4f,0.4f));    // it's a bit too big for our scene, so scale it down
+        ourShader.setMat4("model", model);
+        tortica.Draw(ourShader);
+
+        */
+
+        //keksici
+        model = glm::mat4(1.0f);
+        model = glm::translate(model,glm::vec3(-7.0f,(10.0f+ sin(glfwGetTime())/6),-15.0f)
+                               ); // translate it down so it's at the center of the scene
+        model = glm::scale(model, glm::vec3(1.2f,1.5f,1.2f));    // it's a bit too big for our scene, so scale it down
+        ourShader.setMat4("model", model);
+        keksici.Draw(ourShader);
+
+
+        //cheezespider
+        model = glm::mat4(1.0f);
+        model = glm::translate(model,glm::vec3(0.0f,(7.0f+ sin(glfwGetTime())/6),15.0f)
+                               ); // translate it down so it's at the center of the scene
+        model = glm::scale(model, glm::vec3(0.02f,0.02f,0.02f));    // it's a bit too big for our scene, so scale it down
+        ourShader.setMat4("model", model);
+        cheezespider.Draw(ourShader);
+
+
+        //ananas
+        model = glm::mat4(1.0f);
+        model = glm::translate(model,glm::vec3(-2.0f,(10.0f+ sin(glfwGetTime())/6),-15.0f)
+                               ); // translate it down so it's at the center of the scene
+        model = glm::scale(model, glm::vec3(0.2f,0.2f,0.2f));    // it's a bit too big for our scene, so scale it down
+        ourShader.setMat4("model", model);
+        ananas.Draw(ourShader);
+
+
+        //cocacola1
+        model = glm::mat4(1.0f);
+        model = glm::translate(model,
+                               glm::vec3(5.0f,(10.0f+ sin(glfwGetTime())/6),-15.0f) ); // translate it down so it's at the center of the scene
+        model = glm::scale(model, glm::vec3(0.2f,0.2f,0.2f));    // it's a bit too big for our scene, so scale it down
+        ourShader.setMat4("model", model);
+        cocacola1.Draw(ourShader);
+
+         /*
+        //cocacola2
+        model = glm::mat4(1.0f);
+        model = glm::translate(model,
+                               cocacola2poz); // translate it down so it's at the center of the scene
+        model = glm::scale(model, glm::vec3(cocacola2scale));    // it's a bit too big for our scene, so scale it down
+        ourShader.setMat4("model", model);
+        cocacola2.Draw(ourShader);
+         */
+
        if (programState->ImGuiEnabled)
            DrawImGui(programState);
-        */
+
         /*
         //WTFFFFF,KAKAV MODEL
         // floor setup
@@ -394,18 +506,23 @@ int main() {
         glCullFace(GL_BACK);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
         glDisable(GL_CULL_FACE);
-         */
+        */
 
+        //Enabling back face culling
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
 
         //*************************************************************************
         // draw skybox as last
         // change depth function so depth test passes when values are equal to depth buffer's content
-        glDepthMask(GL_FALSE);//!!!!!!
+        //glDepthMask(GL_FALSE);//!!!!!!
+
         glDepthFunc(GL_LEQUAL);
         skyboxShader.use();
-        //projection=glm::perspective(glm::radians(programState->camera.Zoom),(float )SCR_WIDTH/(float )SCR_HEIGHT , 0.1f ,100.0f);
+        model = glm::mat4(1.0f);//MOZDA JE OVO PROBLEM
+        projection=glm::perspective(glm::radians(programState->camera.Zoom),(float )SCR_WIDTH/(float )SCR_HEIGHT , 0.1f ,100.0f);
         //view=glm::mat4(glm::mat3(programState->camera.GetViewMatrix()));
-        //view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix
+        view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix
         //skyboxShader.setMat4("view", view);
         skyboxShader.setMat4("view", glm::mat4(glm::mat3 (view)));
         skyboxShader.setMat4("projection", projection);
@@ -415,25 +532,26 @@ int main() {
         glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
-        glDepthMask(GL_TRUE);//!!!!!
+        //glDepthMask(GL_TRUE);//!!!!!
         glDepthFunc(GL_LESS); // set depth function back to default
-        //glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
         //*********************************************
 
-
+        // view = glm::mat4(glm::mat3(camera.GetViewMatrix()));
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-    /*
+
     programState->SaveToFile("resources/program_state.txt");
     delete programState;
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
-    */
+
     //deleting arrays and buffers
     //glDeleteVertexArrays(1, &floorVAO);
     glDeleteVertexArrays(1, &skyboxVAO);//~~~~~~~~~~~~~~~~~~
@@ -499,7 +617,7 @@ void mouse_callback(GLFWwindow *window, double xpos, double ypos) {
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
     camera.ProcessMouseScroll(yoffset);
 }
-/*
+
 void DrawImGui(ProgramState *programState) {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
@@ -529,7 +647,7 @@ void DrawImGui(ProgramState *programState) {
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
- */
+
 //skajboks
 //Cubemap loading function
 //------------------------------------------------------------------------
@@ -602,7 +720,7 @@ unsigned int loadTexture(const char *path) {
 }
 
 
-/*
+
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
     if (key == GLFW_KEY_F1 && action == GLFW_PRESS) {
         programState->ImGuiEnabled = !programState->ImGuiEnabled;
@@ -614,4 +732,3 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
         }
     }
 }
-*/
