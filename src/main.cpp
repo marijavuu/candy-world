@@ -14,7 +14,7 @@
 #include <learnopengl/camera.h>
 #include <learnopengl/model.h>
 
-#include <iostream>
+#include <iostream>1
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void mouse_callback(GLFWwindow *window, double xpos, double ypos);
@@ -183,11 +183,40 @@ int main() {
     // -------------------------
     Shader skyboxShader("resources/shaders/skybox.vs", "resources/shaders/skybox.fs");
     Shader ourShader("resources/shaders/2.model_lighting.vs", "resources/shaders/2.model_lighting.fs");
+    Shader tanjirShader("resources/shaders/tanjir.vs","resources/shaders/tanjir.fs");
+
+
+    // tanjir
+    float vertices[] = {          //naopacke !!!!!!
+            // positions         // texture Coords (swapped y coordinates because texture is flipped upside down)
+            0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
+            0.0f, -0.5f,  0.0f,  0.0f,  1.0f,
+            1.0f, -0.5f,  0.0f,  1.0f,  1.0f,
+
+            0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
+            1.0f, -0.5f,  0.0f,  1.0f,  1.0f,
+            1.0f,  0.5f,  0.0f,  1.0f,  0.0f
+    };
+
+    //vao i vbo za tanjir
+    unsigned int tanjirVAO, tanjirVBO;
+    glGenVertexArrays(1, &tanjirVAO);
+    glGenBuffers(1, &tanjirVBO);
+    glBindVertexArray(tanjirVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, tanjirVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glBindVertexArray(0);
+
+
 
 
     /*
-    // floor plain coordinates
-    float floorVertices[] = {                          //i ovo mozda ugasi
+    //pod
+    float floorVertices[] = {
             // positions          // normals          // texture coords
             0.5f,  0.5f,  0.0f,  0.0f, 0.0f, -1.0f,  1.0f,  1.0f,  // top right
             0.5f, -0.5f,  0.0f,  0.0f, 0.0f, -1.0f,  1.0f,  0.0f,  // bottom right
@@ -201,6 +230,9 @@ int main() {
             1, 2, 3   // second Triangle
     };
     */
+
+    glm::vec3 tanjiric = glm::vec3(-4.0f,8.0f,-60.0f);
+
 
     // load models
     // -----------
@@ -231,12 +263,19 @@ int main() {
     pointLight.ambient = glm::vec3(0.1, 0.1, 0.1);
     pointLight.diffuse = glm::vec3(0.6, 0.6, 0.6);
     pointLight.specular = glm::vec3(1.0, 1.0, 1.0);
-    pointLight.constant = 1.0f;
-    pointLight.linear = 0.09f;
-    pointLight.quadratic = 0.032f;
+    pointLight.constant = 0.5f;//proba
+    pointLight.linear = 0.00009f;//proba
+    pointLight.quadratic = 0.000032f;//proba
 
-
+    // load textures
+    //unsigned int cocacola1tex = loadTexture(FileSystem::getPath("resources/objects/model27/drinktex.png").c_str());
     //***********************************************************************************
+
+
+    // load textures
+    unsigned int  tanjirictex= loadTexture(FileSystem::getPath("resources/textures/tanjir5.png").c_str());
+
+
 
     float skyboxVertices[] = {
             // positions
@@ -319,30 +358,30 @@ int main() {
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
-
-
-    //ucitavanje teksture
-    // floor
+    //ucitavanje teksture kokalkole probaa zbog soka
+    /*
+    unsigned int cocacola11 = loadTexture(FileSystem::getPath("resources/objects/model27/Cocacolatexture.jpg").c_str());
+    unsigned int cocacola12 = loadTexture(FileSystem::getPath("resources/objects/model27/drinktex.png").c_str()); //!!!!!!!!!!!!!!!!!!!!!!!!
+    unsigned int cocacola13 = loadTexture(FileSystem::getPath("resources/objects/model27/IceNormalMap.jpg").c_str());
+    unsigned int cocacola14 = loadTexture(FileSystem::getPath("resources/objects/model27/IceTexture.jpg").c_str());
+    */
+     // floor
     //unsigned int floorDiffuseMap = loadTexture(FileSystem::getPath("resources/textures/crna.jpg").c_str());
 
 
     vector<std::string> faces {
-/*
+      /*
+          //ovo ti je neki skybox sa neta ,nisu namestene ivice kocke,proba ,bolji tvoj!
+
                    FileSystem::getPath("resources/textures/skybox/0003_0.jpg"),
                     FileSystem::getPath("resources/textures/skybox/0001_0.jpg"),
                     FileSystem::getPath("resources/textures/skybox/0005_0.jpg"),
                     FileSystem::getPath("resources/textures/skybox/0004_0.jpg"),
                     FileSystem::getPath("resources/textures/skybox/0002_0.jpg"),
                     FileSystem::getPath("resources/textures/skybox/0006_0.jpg")
+      */
 
 
-            FileSystem::getPath("resources/textures/skybox/front.jpg"),
-            FileSystem::getPath("resources/textures/skybox/back.jpg"),
-            FileSystem::getPath("resources/textures/skybox/top.jpg"),
-            FileSystem::getPath("resources/textures/skybox/bottom.jpg"),
-            FileSystem::getPath("resources/textures/skybox/left.jpg"),
-            FileSystem::getPath("resources/textures/skybox/right.jpg")
-*/
 
 
             FileSystem::getPath("resources/textures/skybox/12.jpg"),
@@ -351,6 +390,8 @@ int main() {
             FileSystem::getPath("resources/textures/skybox/12.jpg"),
             FileSystem::getPath("resources/textures/skybox/2.jpg"),
             FileSystem::getPath("resources/textures/skybox/5.jpg")
+
+
 
     };
 
@@ -471,6 +512,16 @@ int main() {
                                glm::vec3(5.0f,(10.0f+ sin(glfwGetTime())/6),-15.0f) ); // translate it down so it's at the center of the scene
         model = glm::scale(model, glm::vec3(0.2f,0.2f,0.2f));    // it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", model);
+        /*
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, cocacola11);
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, cocacola12);
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, cocacola13);
+        glActiveTexture(GL_TEXTURE4);
+        glBindTexture(GL_TEXTURE_2D, cocacola14);
+         */
         cocacola1.Draw(ourShader);
 
          /*
@@ -487,7 +538,7 @@ int main() {
            DrawImGui(programState);
 
         /*
-        //WTFFFFF,KAKAV MODEL
+        //PODDDDD,KOJI IPAK VRV NECEMO
         // floor setup
         // light properties
         ourShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
@@ -511,6 +562,22 @@ int main() {
         //Enabling back face culling
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
+
+
+        //tanjir
+        tanjirShader.use();
+        tanjirShader.setMat4("projection", projection);
+        tanjirShader.setMat4("view", view);
+
+        glBindVertexArray(tanjirVAO);
+        glBindTexture(GL_TEXTURE_2D, tanjirictex);
+        model = glm::mat4(1.0f);
+        model = glm::translate(model,tanjiric);
+        model = glm::scale(model, glm::vec3(30.0f,10.0f,30.0f));
+        tanjirShader.setMat4("model",model);
+        glDrawArrays(GL_TRIANGLES,0,6);
+
+
 
         //*************************************************************************
         // draw skybox as last
@@ -647,8 +714,6 @@ void DrawImGui(ProgramState *programState) {
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
-
-//skajboks
 //Cubemap loading function
 //------------------------------------------------------------------------
 unsigned int loadCubemap(vector<std::string> faces)
@@ -722,7 +787,7 @@ unsigned int loadTexture(const char *path) {
 
 
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
-    if (key == GLFW_KEY_F1 && action == GLFW_PRESS) {
+    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
         programState->ImGuiEnabled = !programState->ImGuiEnabled;
         if (programState->ImGuiEnabled) {
             programState->CameraMouseMovementUpdateEnabled = false;
