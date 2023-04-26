@@ -31,7 +31,7 @@ const unsigned int SCR_WIDTH = 1600;//izmene
 const unsigned int SCR_HEIGHT = 800;//izmene
 
 // camera
-Camera camera(glm::vec3(4.0f, 5.0f, 25.0f));//izmena
+Camera camera(glm::vec3(-10.0f, 5.0f, 20.0f));//izmena
 bool CameraMouseMovementUpdateEnabled = true;
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
@@ -231,7 +231,7 @@ int main() {
     };
     */
 
-    glm::vec3 tanjiric = glm::vec3(-4.0f,8.0f,-60.0f);
+    glm::vec3 tanjiric = glm::vec3(-13.0f,-5.0f,-3.0f);
 
 
     // load models
@@ -384,12 +384,12 @@ int main() {
 
 
 
-            FileSystem::getPath("resources/textures/skybox/12.jpg"),
-            FileSystem::getPath("resources/textures/skybox/12.jpg"),
-            FileSystem::getPath("resources/textures/skybox/12.jpg"),
-            FileSystem::getPath("resources/textures/skybox/12.jpg"),
             FileSystem::getPath("resources/textures/skybox/2.jpg"),
-            FileSystem::getPath("resources/textures/skybox/5.jpg")
+            FileSystem::getPath("resources/textures/skybox/5.jpg"),
+            FileSystem::getPath("resources/textures/skybox/12.jpg"),
+            FileSystem::getPath("resources/textures/skybox/12.jpg"),
+            FileSystem::getPath("resources/textures/skybox/12.jpg"),
+            FileSystem::getPath("resources/textures/skybox/12.jpg")
 
 
 
@@ -463,7 +463,7 @@ int main() {
 
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model,
-                               glm::vec3(10.0f,(5.0f+ sin(glfwGetTime())/6),1.0f)); // translate it down so it's at the center of the scene
+                               glm::vec3(5.0f,(3.0f+ sin(glfwGetTime())/6),-5.0f)); // translate it down so it's at the center of the scene
         model = glm::scale(model, glm::vec3(1.2f,1.5f,1.2f));    // it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", model);
         hamburgeri.Draw(ourShader);
@@ -481,7 +481,7 @@ int main() {
 
         //keksici
         model = glm::mat4(1.0f);
-        model = glm::translate(model,glm::vec3(-7.0f,(10.0f+ sin(glfwGetTime())/6),-15.0f)
+        model = glm::translate(model,glm::vec3(3.0f,(3.0f+ sin(glfwGetTime())/6),-4.0f)
                                ); // translate it down so it's at the center of the scene
         model = glm::scale(model, glm::vec3(1.2f,1.5f,1.2f));    // it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", model);
@@ -490,8 +490,9 @@ int main() {
 
         //cheezespider
         model = glm::mat4(1.0f);
-        model = glm::translate(model,glm::vec3(0.0f,(7.0f+ sin(glfwGetTime())/6),15.0f)
+        model = glm::translate(model,glm::vec3(-15.0f,(5.0f+ sin(glfwGetTime())/6),8.0f)
                                ); // translate it down so it's at the center of the scene
+        model = glm::rotate(model, (float) sin(glfwGetTime()), glm::vec3(0.0, 1.0, 0.0));
         model = glm::scale(model, glm::vec3(0.02f,0.02f,0.02f));    // it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", model);
         cheezespider.Draw(ourShader);
@@ -499,7 +500,7 @@ int main() {
 
         //ananas
         model = glm::mat4(1.0f);
-        model = glm::translate(model,glm::vec3(-2.0f,(10.0f+ sin(glfwGetTime())/6),-15.0f)
+        model = glm::translate(model,glm::vec3(-5.0f,(3.0f+ sin(glfwGetTime())/6),-3.0f)
                                ); // translate it down so it's at the center of the scene
         model = glm::scale(model, glm::vec3(0.2f,0.2f,0.2f));    // it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", model);
@@ -509,7 +510,7 @@ int main() {
         //cocacola1
         model = glm::mat4(1.0f);
         model = glm::translate(model,
-                               glm::vec3(5.0f,(10.0f+ sin(glfwGetTime())/6),-15.0f) ); // translate it down so it's at the center of the scene
+                               glm::vec3(4.0f,(3.0f+ sin(glfwGetTime())/6),5.0f) ); // translate it down so it's at the center of the scene
         model = glm::scale(model, glm::vec3(0.2f,0.2f,0.2f));    // it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", model);
         /*
