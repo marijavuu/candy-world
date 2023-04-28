@@ -231,8 +231,8 @@ int main() {
     };
     */
 
-    glm::vec3 tanjiric = glm::vec3(-13.0f,-5.0f,-3.0f);
-
+    glm::vec3 tanjiric1 = glm::vec3(0.0f,-5.0f,-3.0f);
+    glm::vec3 tanjiric2 = glm::vec3(-26.0f,-5.0f,-3.0f);
 
     // load models
     // -----------
@@ -273,8 +273,8 @@ int main() {
 
 
     // load textures
-    unsigned int  tanjirictex= loadTexture(FileSystem::getPath("resources/textures/tanjir5.png").c_str());
-
+    unsigned int  tanjiric1tex= loadTexture(FileSystem::getPath("resources/textures/tanjir5.png").c_str());
+    unsigned int  tanjiric2tex= loadTexture(FileSystem::getPath("resources/textures/tanjir5.png").c_str());
 
 
     float skyboxVertices[] = {
@@ -463,8 +463,8 @@ int main() {
 
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model,
-                               glm::vec3(5.0f,(3.0f+ sin(glfwGetTime())/6),-5.0f)); // translate it down so it's at the center of the scene
-        model = glm::scale(model, glm::vec3(1.2f,1.5f,1.2f));    // it's a bit too big for our scene, so scale it down
+                               glm::vec3(-1.0f,(-3.0f+ sin(glfwGetTime())/6),0.0f)); // translate it down so it's at the center of the scene
+        model = glm::scale(model, glm::vec3(0.7f,0.7f,0.7f));    // it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", model);
         hamburgeri.Draw(ourShader);
 
@@ -481,7 +481,7 @@ int main() {
 
         //keksici
         model = glm::mat4(1.0f);
-        model = glm::translate(model,glm::vec3(3.0f,(3.0f+ sin(glfwGetTime())/6),-4.0f)
+        model = glm::translate(model,glm::vec3(-16.0f,(-3.0f+ sin(glfwGetTime())/6),0.0f)
                                ); // translate it down so it's at the center of the scene
         model = glm::scale(model, glm::vec3(1.2f,1.5f,1.2f));    // it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", model);
@@ -490,18 +490,20 @@ int main() {
 
         //cheezespider
         model = glm::mat4(1.0f);
-        model = glm::translate(model,glm::vec3(-15.0f,(5.0f+ sin(glfwGetTime())/6),8.0f)
+        model = glm::translate(model,glm::vec3(-15.0f,(2.0f+ sin(glfwGetTime())/6),50.0f)
                                ); // translate it down so it's at the center of the scene
+        model = glm::rotate(model, (float)-90, glm::vec3(0.0, 1.0, 0.0));
         model = glm::rotate(model, (float) sin(glfwGetTime()), glm::vec3(0.0, 1.0, 0.0));
-        model = glm::scale(model, glm::vec3(0.02f,0.02f,0.02f));    // it's a bit too big for our scene, so scale it down
+        model = glm::scale(model, glm::vec3(0.1f,0.1f,0.1f));    // it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", model);
         cheezespider.Draw(ourShader);
 
 
         //ananas
         model = glm::mat4(1.0f);
-        model = glm::translate(model,glm::vec3(-5.0f,(3.0f+ sin(glfwGetTime())/6),-3.0f)
+        model = glm::translate(model,glm::vec3(-9.0f,(-3.0f+ sin(glfwGetTime())/6),0.0f)
                                ); // translate it down so it's at the center of the scene
+        model = glm::rotate(model, (float)-90, glm::vec3(0.0, 1.0, 0.0));
         model = glm::scale(model, glm::vec3(0.2f,0.2f,0.2f));    // it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", model);
         ananas.Draw(ourShader);
@@ -510,7 +512,7 @@ int main() {
         //cocacola1
         model = glm::mat4(1.0f);
         model = glm::translate(model,
-                               glm::vec3(4.0f,(3.0f+ sin(glfwGetTime())/6),5.0f) ); // translate it down so it's at the center of the scene
+                               glm::vec3(-6.0f,(-3.0f+ sin(glfwGetTime())/6),0.0f) ); // translate it down so it's at the center of the scene
         model = glm::scale(model, glm::vec3(0.2f,0.2f,0.2f));    // it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", model);
         /*
@@ -564,20 +566,35 @@ int main() {
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
 
-
-        //tanjir
+        /*
+        //tanjir1
         tanjirShader.use();
         tanjirShader.setMat4("projection", projection);
         tanjirShader.setMat4("view", view);
 
         glBindVertexArray(tanjirVAO);
-        glBindTexture(GL_TEXTURE_2D, tanjirictex);
+        glBindTexture(GL_TEXTURE_2D, tanjiric1tex);
         model = glm::mat4(1.0f);
-        model = glm::translate(model,tanjiric);
-        model = glm::scale(model, glm::vec3(30.0f,10.0f,30.0f));
+        model = glm::translate(model,tanjiric1);
+        //model = glm::rotate(model, (float)-90, glm::vec3(0.0, 1.0, 0.0));
+        model = glm::scale(model, glm::vec3(20.0f,10.0f,20.0f));
         tanjirShader.setMat4("model",model);
         glDrawArrays(GL_TRIANGLES,0,6);
+        */
 
+
+        //tanjir2
+        tanjirShader.use();
+        tanjirShader.setMat4("projection", projection);
+        tanjirShader.setMat4("view", view);
+
+        glBindVertexArray(tanjirVAO);
+        glBindTexture(GL_TEXTURE_2D, tanjiric2tex);
+        model = glm::mat4(1.0f);
+        model = glm::translate(model,tanjiric2);
+        model = glm::scale(model, glm::vec3(35.0f,25.0f,35.0f));
+        tanjirShader.setMat4("model",model);
+        glDrawArrays(GL_TRIANGLES,0,6);
 
 
         //*************************************************************************
