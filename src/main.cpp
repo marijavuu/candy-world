@@ -36,9 +36,9 @@ bool hdr = true;
 bool hdrKeyPressed = false;
 bool bloom = false;
 bool bloomKeyPressed = false;
-//int increaseSpeed = 1.0f;
+int increaseSpeed = 1.0f;
 float exposure = 1.0f;
-
+glm::vec3 spiderPosition = glm::vec3(-15.0f,2.0f,50.0f);
 
 // camera
 Camera camera(glm::vec3(-10.0f, 5.0f, 20.0f));//izmena
@@ -68,7 +68,7 @@ struct ProgramState {
     bool CameraMouseMovementUpdateEnabled = true;
     glm::vec3 backpackPosition = glm::vec3(0.0f);
     float backpackScale = 1.0f;
-   // PointLight pointLight;
+    // PointLight pointLight;
     ProgramState()
             : camera(glm::vec3(0.0f, 0.0f, 3.0f)) {}
     void SaveToFile(std::string filename);
@@ -416,21 +416,18 @@ int main() {
         glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-         /*
-        pointLight.position = glm::vec3(4.0 * cos(currentFrame), 4.0f, 4.0 * sin(currentFrame));
-        ourShader.setVec3("pointLight.position", pointLight.position);
-        ourShader.setVec3("pointLight.ambient", pointLight.ambient);
-        ourShader.setVec3("pointLight.diffuse", pointLight.diffuse);
-        ourShader.setVec3("pointLight.specular", pointLight.specular);
-        ourShader.setFloat("pointLight.constant", pointLight.constant);
-        ourShader.setFloat("pointLight.linear", pointLight.linear);
-        ourShader.setFloat("pointLight.quadratic", pointLight.quadratic);
-
-
-
-        ourShader.setVec3("viewPosition",programState->camera.Position);
-        ourShader.setFloat("material.shininess", 32.0f);
-          */
+        /*
+       pointLight.position = glm::vec3(4.0 * cos(currentFrame), 4.0f, 4.0 * sin(currentFrame));
+       ourShader.setVec3("pointLight.position", pointLight.position);
+       ourShader.setVec3("pointLight.ambient", pointLight.ambient);
+       ourShader.setVec3("pointLight.diffuse", pointLight.diffuse);
+       ourShader.setVec3("pointLight.specular", pointLight.specular);
+       ourShader.setFloat("pointLight.constant", pointLight.constant);
+       ourShader.setFloat("pointLight.linear", pointLight.linear);
+       ourShader.setFloat("pointLight.quadratic", pointLight.quadratic);
+       ourShader.setVec3("viewPosition",programState->camera.Position);
+       ourShader.setFloat("material.shininess", 32.0f);
+         */
 
         //Directional Lignt
         ourShader.setVec3("dirLight.direction", 20.0f, 20.0f, 0.0f);
@@ -517,8 +514,7 @@ int main() {
 
         //cheezespider
         model = glm::mat4(1.0f);
-        model = glm::translate(model,glm::vec3(-15.0f,(2.0f+ sin(glfwGetTime())/6),50.0f)
-        ); // translate it down so it's at the center of the scene
+        model = glm::translate(model,spiderPosition); // translate it down so it's at the center of the scene
         model = glm::rotate(model, (float)-90, glm::vec3(0.0, 1.0, 0.0));
         model = glm::rotate(model, (float) sin(glfwGetTime()), glm::vec3(0.0, 1.0, 0.0));
         model = glm::scale(model, glm::vec3(0.1f,0.1f,0.1f));    // it's a bit too big for our scene, so scale it down
@@ -667,6 +663,35 @@ void renderQuad()
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     glBindVertexArray(0);
 }
+
+// Spider movement
+void moveSpider(Camera_Movement direction,int increaseSpeed)
+{
+    float velocity = 2.5f * deltaTime * increaseSpeed;
+    glm::vec3 yLock(1.0f, 0.0f, 1.0f);
+    glm::vec3 yMove(0.0f, 5.0f, 0.0f);
+
+    if (direction == FORWARD)
+        spiderPosition += camera.Front * velocity * yLock;
+    if (direction == BACKWARD)
+        spiderPosition -= camera.Front * velocity * yLock;
+    if (direction == LEFT)
+        spiderPosition -= camera.Right * velocity * yLock;
+    if (direction == RIGHT)
+        spiderPosition += camera.Right * velocity * yLock;
+
+    if (direction == UP)
+        spiderPosition += velocity * yMove;
+    if (direction == DOWN)
+        spiderPosition -= velocity * yMove;
+     /*
+    if (spiderPosition.y < 0.0f)
+        spiderPosition.y = 0.0f;
+    else if (spiderPosition.y > 3.0f)
+        spiderPosition.y = 3.0f;
+      */
+}
+
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow *window) {
@@ -674,16 +699,41 @@ void processInput(GLFWwindow *window) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
+    if(glfwGetKey(window,GLFW_KEY_O) == GLFW_PRESS){
+        increaseSpeed = 3.0f;
+    }else
+        increaseSpeed = 1.0f;
+
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        camera.ProcessKeyboard(FORWARD, deltaTime);
+        camera.ProcessKeyboard(FORWARD, deltaTime * increaseSpeed);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        camera.ProcessKeyboard(BACKWARD, deltaTime);
+        camera.ProcessKeyboard(BACKWARD, deltaTime * increaseSpeed);
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        camera.ProcessKeyboard(LEFT, deltaTime);
+        camera.ProcessKeyboard(LEFT, deltaTime * increaseSpeed);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        camera.ProcessKeyboard(RIGHT, deltaTime);
+        camera.ProcessKeyboard(RIGHT, deltaTime* increaseSpeed);
+
+    if(glfwGetKey(window,GLFW_KEY_I) == GLFW_PRESS){
+        increaseSpeed = 5.0f;
+    }else
+        increaseSpeed = 1.0f;
 
 
+    // spider movement
+    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+        moveSpider(FORWARD,increaseSpeed);
+    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+        moveSpider(BACKWARD,increaseSpeed);
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+        moveSpider(LEFT,increaseSpeed);
+    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+        moveSpider(RIGHT,increaseSpeed);
+
+    if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS)
+        moveSpider(UP,increaseSpeed);
+    if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS)
+        moveSpider(DOWN,increaseSpeed);
+    
 
     if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS && !hdrKeyPressed)
     {
