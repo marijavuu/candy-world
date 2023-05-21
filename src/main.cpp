@@ -29,8 +29,8 @@ unsigned int loadTexture(char const * path);
 unsigned int loadCubemap(vector<std::string> faces);
 
 // settings
-const unsigned int SCR_WIDTH = 1600;//izmene
-const unsigned int SCR_HEIGHT = 800;//izmene
+const unsigned int SCR_WIDTH = 1600;
+const unsigned int SCR_HEIGHT = 800;
 
 bool hdr = true;
 bool hdrKeyPressed = false;
@@ -41,7 +41,7 @@ float exposure = 1.0f;
 glm::vec3 spiderPosition = glm::vec3(-15.0f,2.0f,50.0f);
 
 // camera
-Camera camera(glm::vec3(-10.0f, 5.0f, 20.0f));//izmena
+Camera camera(glm::vec3(-10.0f, 5.0f, 20.0f));
 bool CameraMouseMovementUpdateEnabled = true;
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
@@ -50,17 +50,7 @@ bool firstMouse = true;
 // timing
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
-/*
-struct PointLight {
-    glm::vec3 position;
-    glm::vec3 ambient;
-    glm::vec3 diffuse;
-    glm::vec3 specular;
-    float constant;
-    float linear;
-    float quadratic;
-};
- */
+
 struct ProgramState {
     glm::vec3 clearColor = glm::vec3(0);
     bool ImGuiEnabled = false;
@@ -140,22 +130,6 @@ int main() {
         return -1;
     }
 
-    // tell stb_image.h to flip loaded texture's on the y-axis (before loading model).
-    //stbi_set_flip_vertically_on_load(true);//vrv ovo remeti ,pa naopacke
-    /*
-    programState = new ProgramState;
-    programState->LoadFromFile("resources/program_state.txt");
-    if (programState->ImGuiEnabled) {
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-    }
-    // Init Imgui
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO &io = ImGui::GetIO();
-    (void) io;
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("#version 330 core");
-    */
     // configure global opengl state
     // -----------------------------
     glEnable(GL_DEPTH_TEST);
@@ -195,7 +169,7 @@ int main() {
     glBindVertexArray(0);
 
 
-    //glm::vec3 tanjiric1 = glm::vec3(0.0f,-5.0f,-3.0f);
+
     glm::vec3 tanjiric2 = glm::vec3(-26.0f,-5.0f,-3.0f);
 
     // load models
@@ -267,19 +241,6 @@ int main() {
     }
 
 
-
-    /*
-    PointLight& pointLight = programState->pointLight;
-    pointLight.position = glm::vec3(4.0f, 4.0, 0.0);
-    pointLight.ambient = glm::vec3(0.1, 0.1, 0.1);
-    pointLight.diffuse = glm::vec3(0.6, 0.6, 0.6);
-    pointLight.specular = glm::vec3(1.0, 1.0, 1.0);
-    pointLight.constant = 0.5f;//proba
-    pointLight.linear = 0.00009f;//proba
-    pointLight.quadratic = 0.000032f;//proba
-    */
-    // load textures
-    //unsigned int cocacola1tex = loadTexture(FileSystem::getPath("resources/objects/model27/drinktex.png").c_str());
     //***********************************************************************************
 
 
@@ -416,18 +377,6 @@ int main() {
         glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        /*
-       pointLight.position = glm::vec3(4.0 * cos(currentFrame), 4.0f, 4.0 * sin(currentFrame));
-       ourShader.setVec3("pointLight.position", pointLight.position);
-       ourShader.setVec3("pointLight.ambient", pointLight.ambient);
-       ourShader.setVec3("pointLight.diffuse", pointLight.diffuse);
-       ourShader.setVec3("pointLight.specular", pointLight.specular);
-       ourShader.setFloat("pointLight.constant", pointLight.constant);
-       ourShader.setFloat("pointLight.linear", pointLight.linear);
-       ourShader.setFloat("pointLight.quadratic", pointLight.quadratic);
-       ourShader.setVec3("viewPosition",programState->camera.Position);
-       ourShader.setFloat("material.shininess", 32.0f);
-         */
 
         //Directional Lignt
         ourShader.setVec3("dirLight.direction", 20.0f, 20.0f, 0.0f);
@@ -540,10 +489,6 @@ int main() {
         ourShader.setMat4("model", model);
         cocacola1.Draw(ourShader);
 
-        /*
-        if (programState->ImGuiEnabled)
-            DrawImGui(programState);
-       */
 
 
         glDisable(GL_CULL_FACE);
@@ -620,13 +565,7 @@ int main() {
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-    /*
-    programState->SaveToFile("resources/program_state.txt");
-    delete programState;
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
-    */
+
     //deleting arrays and buffers
     glDeleteVertexArrays(1, &skyboxVAO);//~~~~~~~~~~~~~~~~~~
     glDeleteBuffers(1, &skyboxVAO);//~~~~~~~~~~~~~~~~~~~~~~~~
@@ -684,12 +623,6 @@ void moveSpider(Camera_Movement direction,int increaseSpeed)
         spiderPosition += velocity * yMove;
     if (direction == DOWN)
         spiderPosition -= velocity * yMove;
-     /*
-    if (spiderPosition.y < 0.0f)
-        spiderPosition.y = 0.0f;
-    else if (spiderPosition.y > 3.0f)
-        spiderPosition.y = 3.0f;
-      */
 }
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
@@ -733,7 +666,7 @@ void processInput(GLFWwindow *window) {
         moveSpider(UP,increaseSpeed);
     if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS)
         moveSpider(DOWN,increaseSpeed);
-    
+
 
     if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS && !hdrKeyPressed)
     {
@@ -803,37 +736,7 @@ void mouse_callback(GLFWwindow *window, double xpos, double ypos) {
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
     camera.ProcessMouseScroll(yoffset);
 }
-/*
-void DrawImGui(ProgramState *programState) {
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
-    {
-        static float f = 0.0f;
-        ImGui::Begin("Hello window");
-        ImGui::Text("Hello text");
-        ImGui::SliderFloat("Float slider", &f, 0.0, 1.0);
-        ImGui::ColorEdit3("Background color", (float *) &programState->clearColor);
-        ImGui::DragFloat3("Backpack position", (float*)&programState->backpackPosition);
-        ImGui::DragFloat("Backpack scale", &programState->backpackScale, 0.05, 0.1, 4.0);
-        ImGui::DragFloat("pointLight.constant", &programState->pointLight.constant, 0.05, 0.0, 1.0);
-        ImGui::DragFloat("pointLight.linear", &programState->pointLight.linear, 0.05, 0.0, 1.0);
-        ImGui::DragFloat("pointLight.quadratic", &programState->pointLight.quadratic, 0.05, 0.0, 1.0);
-        ImGui::End();
-    }
-    {
-        ImGui::Begin("Camera info");
-        const Camera& c = programState->camera;
-        ImGui::Text("Camera position: (%f, %f, %f)", c.Position.x, c.Position.y, c.Position.z);
-        ImGui::Text("(Yaw, Pitch): (%f, %f)", c.Yaw, c.Pitch);
-        ImGui::Text("Camera front: (%f, %f, %f)", c.Front.x, c.Front.y, c.Front.z);
-        ImGui::Checkbox("Camera mouse update", &programState->CameraMouseMovementUpdateEnabled);
-        ImGui::End();
-    }
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-}
- */
+
 //Cubemap loading function
 //------------------------------------------------------------------------
 unsigned int loadCubemap(vector<std::string> faces)
