@@ -1,6 +1,6 @@
 # project_base  
-//neki opis  
-link yt:...
+projekat iz rg2023
+link sa snimkom: https://drive.google.com/file/d/1MEf3wv5frGrn-d98QrKR2xUfiCamJnwV/view?usp=sharing
 
 
 # Uputstvo
